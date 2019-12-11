@@ -42,4 +42,20 @@ func main() {
 	}
 	defer db.Close()
 
+	wo := gorocksdb.NewDefaultWriteOptions()
+	ro := gorocksdb.NewDefaultReadOptions()
+
+	err = db.Put(wo, []byte("magic"), []byte("1"))
+	value, err := db.Get(ro, []byte("magic"))
+
+	v := fmt.Sprintf("%s", value.Data())
+
+	fmt.Println(v == "1")
+
+	var key interface{}
+	key = "3"
+	byteKey := []byte(fmt.Sprintf("%v", key.(interface{})))
+	fmt.Println(byteKey)
+
+	fmt.Println(string(byteKey) == "3")
 }

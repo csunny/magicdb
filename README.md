@@ -3,7 +3,7 @@ Magicdb is a distribute k-v database
 
 
 # Arch
-[!架构图](https://github.com/csunny/magicdb/blob/master/asserts/magicdb_arch.jpg)
+![架构图](https://github.com/csunny/magicdb/blob/master/asserts/magicdb_arch.jpg)
 - 网络协议层libp2p raft
 
 # Example

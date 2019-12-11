@@ -65,4 +65,71 @@ func TestOperate(t *testing.T) {
 	if string(v) != "bar" {
 		t.Fatal("Get value not equal set value, the get value is " + string(v) + " but excepted is 'bar' ")
 	}
+
+	// Delete test
+	err = store.Delete("foo")
+	if err != nil {
+		t.Fatal("Delete from store error ", err)
+	}
+
+	v2, err := store.Get("foo")
+	if err != nil {
+		t.Fatal("Get value error ", err)
+	}
+
+	if v2 != nil {
+		t.Fatal("Delete key error from store, excepted nil but value get ", v2)
+	}
+}
+
+func TestBatchOperate(t *testing.T) {
+	opts := buildOpts()
+
+	store, err := NewKvStore(opts, tmpPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+
+	var _item []kv
+	// Batch test
+	for i := 0; i < 10; i++ {
+		_item = append(_item, kv{i, i})
+	}
+	err = store.BatchPut(_item)
+	if err != nil {
+		t.Fatal("Batch put error ", err)
+	}
+
+	// Test if put
+	for i := 0; i < 10; i++ {
+		_v, err := store.Get(i)
+		if err != nil {
+			t.Fatal("Batch operate, Get error ", err)
+		}
+		if _v == nil {
+			t.Fatal("Batch delete error, excepted nil, but got ", string(_v))
+		}
+	}
+
+	var keys []item
+	// Batch Delete
+	for i := 0; i < 10; i++ {
+		keys = append(keys, i)
+	}
+	err = store.BatchDelete(keys)
+	if err != nil {
+		t.Fatal("Batch Delete error ", err)
+	}
+
+	// Test if delete
+	for i := 0; i < 10; i++ {
+		_v, err := store.Get(i)
+		if err != nil {
+			t.Fatal("Batch operate, Get error ", err)
+		}
+		if _v != nil {
+			t.Fatal("Batch delete error, excepted nil, but got ", _v)
+		}
+	}
 }

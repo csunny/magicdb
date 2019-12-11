@@ -41,10 +41,10 @@ type kvstorer interface {
 
 	//Batch operate
 	//Batch Put
-	BatchPut(kvpair ...kv) error
+	BatchPut(kvpair []kv) error
 
 	// BatchDelete
-	BatchDelete(k ...item) error
+	BatchDelete(k []item) error
 
 	// Close the kvstore
 	Close()
@@ -103,7 +103,7 @@ func (s *kvstore) Delete(k item) error {
 }
 
 // BatchPut batch put a batch of k-v pairs to store
-func (s *kvstore) BatchPut(kvpair ...kv) error {
+func (s *kvstore) BatchPut(kvpair []kv) error {
 	wo := gorocksdb.NewDefaultWriteOptions()
 	wb := gorocksdb.NewWriteBatch()
 	s.mu.Lock()
@@ -118,7 +118,7 @@ func (s *kvstore) BatchPut(kvpair ...kv) error {
 }
 
 // BatchDelete delete a batch of kv pairs from store
-func (s *kvstore) BatchDelete(k ...item) error {
+func (s *kvstore) BatchDelete(k []item) error {
 	wo := gorocksdb.NewDefaultWriteOptions()
 	wb := gorocksdb.NewWriteBatch()
 

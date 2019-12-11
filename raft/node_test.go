@@ -1,3 +1,4 @@
+// Copyright 2019 The magicdb Authors
 //
 // Licensed under the Apache Licence, Version 2.0(the "License");
 // You may not use the file except in compliance with the Licence.
@@ -10,10 +11,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package main
+package raft
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
-func main() {
-	fmt.Println("hello world")
+func TestNewNode(t *testing.T) {
+	n, err := NewNode(9999)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(n.ID().Pretty())
 }

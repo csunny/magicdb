@@ -48,14 +48,11 @@ type kvstorer interface {
 
 	// Close the kvstore
 	Close()
-
-	// Clear the kvstore and reuse
-	Clear()
 }
 
 type kv struct {
-	Key   string
-	Value string
+	Key   item
+	Value item
 }
 
 func newKvStore(opts *gorocksdb.Options, name string) (*kvstore, error) {
@@ -86,4 +83,47 @@ func (s *kvstore) Get(k item) (item, error) {
 		return nil, err
 	}
 	return value, nil
+}
+
+// Delete the key-value pair from store
+func (s *kvstore) Delete(k item) error {
+	wo := gorocksdb.NewDefaultWriteOptions()
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	err := s.db.Delete(wo, k.([]byte))
+	return err
+}
+
+// BatchPut batch put a batch of k-v pairs to store
+func (s *kvstore) BatchPut(kvpair ...kv) error {
+	wo := gorocksdb.NewDefaultWriteOptions()
+	wb := gorocksdb.NewWriteBatch()
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, _kv := range kvpair {
+		wb.Put(_kv.Key.([]byte), _kv.Value.([]byte))
+	}
+	err := s.db.Write(wo, wb)
+	return err
+}
+
+// BatchDelete delete a batch of kv pairs from store
+func (s *kvstore) BatchDelete(k ...item) error {
+	wo := gorocksdb.NewDefaultWriteOptions()
+	wb := gorocksdb.NewWriteBatch()
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for _, _k := range k {
+		wb.Delete(_k.([]byte))
+	}
+	err := s.db.Write(wo, wb)
+	return err
+}
+
+// Close close the store db
+func (s *kvstore) Close() {
+	s.db.Close()
 }

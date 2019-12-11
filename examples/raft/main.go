@@ -64,6 +64,9 @@ func main() {
 	defer peer2.Close()
 	defer peer3.Close()
 
+	fmt.Println(peer1.ID().Pretty(), peer1.Addrs())
+	fmt.Println(peer2.ID().Pretty(), peer2.Addrs())
+	fmt.Println(peer3.ID().Pretty(), peer3.Addrs())
 	peer1.Peerstore().AddAddrs(peer2.ID(), peer2.Addrs(), peerstore.PermanentAddrTTL)
 	peer1.Peerstore().AddAddrs(peer3.ID(), peer3.Addrs(), peerstore.PermanentAddrTTL)
 

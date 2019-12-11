@@ -34,7 +34,7 @@ type kvstorer interface {
 	Put(key, val item) error
 
 	// Get get a key-value from store
-	Get(key item) (item, error)
+	Get(key item) ([]byte, error)
 
 	// Delete a key from store
 	Delete(key item) error
@@ -55,7 +55,8 @@ type kv struct {
 	Value item
 }
 
-func newKvStore(opts *gorocksdb.Options, name string) (*kvstore, error) {
+// NewKvStore create a kvstore object
+func NewKvStore(opts *gorocksdb.Options, name string) (*kvstore, error) {
 	db, err := gorocksdb.OpenDb(opts, name)
 	if err != nil {
 		return nil, err
@@ -69,20 +70,25 @@ func (s *kvstore) Put(k, v item) error {
 	wo := gorocksdb.NewDefaultWriteOptions()
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	err := s.db.Put(wo, k.([]byte), v.([]byte))
+
+	byteK := toBytes(k)
+	byteV := toBytes(v)
+	err := s.db.Put(wo, byteK, byteV)
 	return err
 }
 
 // Get a key from store
-func (s *kvstore) Get(k item) (item, error) {
+func (s *kvstore) Get(k item) ([]byte, error) {
 	ro := gorocksdb.NewDefaultReadOptions()
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	value, err := s.db.Get(ro, k.([]byte))
+
+	byteK := toBytes(k)
+	value, err := s.db.Get(ro, byteK)
 	if err != nil {
 		return nil, err
 	}
-	return value, nil
+	return value.Data(), nil
 }
 
 // Delete the key-value pair from store
@@ -91,7 +97,8 @@ func (s *kvstore) Delete(k item) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	err := s.db.Delete(wo, k.([]byte))
+	byteK := toBytes(k)
+	err := s.db.Delete(wo, byteK)
 	return err
 }
 
@@ -102,7 +109,9 @@ func (s *kvstore) BatchPut(kvpair ...kv) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	for _, _kv := range kvpair {
-		wb.Put(_kv.Key.([]byte), _kv.Value.([]byte))
+		byteK := toBytes(_kv.Key)
+		byteV := toBytes(_kv.Value)
+		wb.Put(byteK, byteV)
 	}
 	err := s.db.Write(wo, wb)
 	return err
@@ -117,7 +126,8 @@ func (s *kvstore) BatchDelete(k ...item) error {
 	defer s.mu.Unlock()
 
 	for _, _k := range k {
-		wb.Delete(_k.([]byte))
+		byteK := toBytes(_k)
+		wb.Delete(byteK)
 	}
 	err := s.db.Write(wo, wb)
 	return err

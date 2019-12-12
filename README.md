@@ -1,4 +1,7 @@
 # MagicDB   -- a distrubute k-v database
+
+[![](https://img.shields.io/badge/project-libp2p-yellow.svg?style=flat-square)](https://github.com/csunny/magicdb/projects/1)
+
 Magicdb is a distribute k-v database which use libp2p network and rocksdb impl
 
 # Arch

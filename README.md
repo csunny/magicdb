@@ -1,4 +1,4 @@
-# MagicDB   -- a distrubute k-v database use libp2p network stack and rocksdb
+# MagicDB   -- a distrubute k-v database
 Magicdb is a distribute k-v database which use libp2p network and rocksdb impl
 
 # Arch
@@ -9,8 +9,19 @@ Magicdb is a distribute k-v database which use libp2p network and rocksdb impl
 - need todo
 
 # Contribute
+
+👏
 This project just is a test k-v databases, please don't use it in your product env.
 
 # Liences
 
 Magicdb is under Apache2.0 licence. See the [Licence](https://github.com/csunny/magicdb/blob/master/LICENSE) file for detail.
+
+
+# Reference
+
+[1] https://github.com/facebook/rocksdb 
+
+[2] https://raft.github.io/
+
+[3] https://github.com/libp2p/go-libp2p-raft

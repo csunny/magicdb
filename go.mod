@@ -14,6 +14,7 @@ require (
 	github.com/libp2p/go-libp2p-peerstore v0.1.4
 	github.com/libp2p/go-libp2p-raft v0.1.4
 	github.com/multiformats/go-multiaddr v0.1.1
+	github.com/spf13/viper v1.3.2
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/tecbot/gorocksdb v0.0.0-20191122205208-eb0a0d0d32b3
 )

@@ -14,8 +14,28 @@
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+
+	"github.com/spf13/viper"
+)
 
 func main() {
-	fmt.Println("Hello world")
+
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+
+	for {
+		viper.WatchConfig()
+		err := viper.ReadInConfig()
+		if err != nil {
+			panic(err)
+		}
+		appName := viper.Get("appName")
+		fmt.Println(appName)
+
+		time.Sleep(2 * time.Second)
+	}
+
 }

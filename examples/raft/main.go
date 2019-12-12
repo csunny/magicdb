@@ -218,10 +218,13 @@ func main() {
 	// Run the 1000 updates on the leader
 	// Barrier() will wait until updates have been applied
 	if actor1.IsLeader() {
+		fmt.Println("I am leader:", actor1)
 		updateState(consensus1)
 	} else if actor2.IsLeader() {
+		fmt.Println("I am leader:", actor2)
 		updateState(consensus2)
 	} else if actor3.IsLeader() {
+		fmt.Println("I am leader:", actor3)
 		updateState(consensus3)
 	}
 

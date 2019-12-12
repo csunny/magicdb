@@ -24,4 +24,5 @@ func TestNewNode(t *testing.T) {
 		t.Fatal(err)
 	}
 	fmt.Println(n.ID().Pretty())
+	defer n.Close()
 }

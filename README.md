@@ -1,6 +1,5 @@
-# Magicdb
-Magicdb is a distribute k-v database
-
+# MagicDB   -- a distrubute k-v database use libp2p network stack and rocksdb
+Magicdb is a distribute k-v database which use libp2p network and rocksdb impl
 
 # Arch
 ![架构图](https://github.com/csunny/magicdb/blob/master/asserts/magicdb_arch.jpg)

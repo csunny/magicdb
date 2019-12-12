@@ -15,11 +15,15 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 
 	"github.com/libp2p/go-libp2p-core/network"
+	"github.com/libp2p/go-libp2p-core/peer"
+	peerstore "github.com/libp2p/go-libp2p-peerstore"
 	raft "github.com/magicdb/raft"
 	ma "github.com/multiformats/go-multiaddr"
 )
@@ -57,7 +61,34 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(nodeAddr)
+	fmt.Println("nodeAddr: ", nodeAddr)
+	pid, err := nodeAddr.ValueForProtocol(ma.P_IPFS)
+	if err != nil {
+		log.Fatal(err)
+	}
+	peerid, err := peer.IDB58Decode(pid)
+	destPeerAddr, _ := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", peerid))
+	destAddr := nodeAddr.Decapsulate(destPeerAddr)
+
+	n.Peerstore().AddAddr(peerid, destAddr, peerstore.PermanentAddrTTL)
+	log.Println("opening stream")
+
+	// Make a new stream from host B to host A
+	// It should be handled on host A by the handler we set above
+	// because we use the same /echo/1.0.0 protocol
+
+	s, err := n.NewStream(context.Background(), peerid, "/echo/1.0.0")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = s.Write([]byte("Hello world!\n"))
+
+	out, err := ioutil.ReadAll(s)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("read reply: %q\n", out)
 }
 
 // do Echo reads a line of data a stream and writes it back

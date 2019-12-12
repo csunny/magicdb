@@ -11,18 +11,31 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package raft
+
+package main
 
 import (
 	"fmt"
-	"testing"
+	"time"
+
+	"github.com/spf13/viper"
 )
 
-func TestNewNode(t *testing.T) {
-	n, err := NewNode(9999)
-	if err != nil {
-		t.Fatal(err)
+func main() {
+
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+
+	for {
+		viper.WatchConfig()
+		err := viper.ReadInConfig()
+		if err != nil {
+			panic(err)
+		}
+		appName := viper.Get("appName")
+		fmt.Println(appName)
+
+		time.Sleep(2 * time.Second)
 	}
-	fmt.Println(n.ID().Pretty())
-	defer n.Close()
+
 }
